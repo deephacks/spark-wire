@@ -1,0 +1,7 @@
+package org.deephacks;
+
+option java_package = "org.deephacks";
+
+message Request {
+  optional uint32 requestId = 1;
+}

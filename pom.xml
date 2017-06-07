@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>spark-wire</groupId>
+  <artifactId>spark-wire</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>spark-wire</name>
+  <description>spark-wire</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.squareup.wire</groupId>
+      <artifactId>wire-runtime</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_2.10</artifactId>
+      <version>1.6.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.squareup.wire</groupId>
+        <artifactId>wire-maven-plugin</artifactId>
+        <version>1.8.0</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-sources</goal>
+            </goals>
+            <configuration>
+              <protoFiles>
+                <param>proto.proto</param>
+              </protoFiles>
+              <generatedSourceDirectory>src/main/java</generatedSourceDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+          </transformers>
+          <artifactSet>
+            <includes>
+              <include>com.squareup.okio:*</include>
+              <include>com.squareup.wire:*</include>
+              <include>com.squareup.moshi:*</include>
+            </includes>
+          </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>okio</pattern>
+              <shadedPattern>org.deephacks.deps.okio</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.squareup.wire</pattern>
+              <shadedPattern>org.deephacks.deps.wire</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.squareup.moshi</pattern>
+              <shadedPattern>org.deephacks.deps.moshi</shadedPattern>
+            </relocation>
+          </relocations>
+          <!--<createSourcesJar>true</createSourcesJar>-->
+          <shadeSourcesContent>true</shadeSourcesContent>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
